@@ -47,3 +47,7 @@ func CountNumberOfIncrease(r io.Reader) (count int) {
 
 	return count
 }
+
+func CountNumberOfWindowIncrease(r io.Reader) (count int) {
+	return 0
+}
