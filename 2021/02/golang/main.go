@@ -45,11 +45,28 @@ func SolvePartOne(r io.Reader) int {
 }
 
 func SolvePartTwo(r io.Reader) int {
-	return 0
+	var (
+		index    int
+		position Position
+	)
+
+	scan := bufio.NewScanner(r)
+	for scan.Scan() {
+		if err := scan.Err(); err != nil {
+			if !errors.Is(err, io.EOF) {
+				panic(fmt.Errorf("in reading line(%d), err: %w", index, err))
+			}
+			break
+		}
+		position.MoveWithAim(scan.Text())
+	}
+
+	return position.X * position.Y
 }
 
 type Position struct {
 	X, Y int
+	Aim  int
 }
 
 var commandRegex = regexp.MustCompile("([a-zA-Z]+) ([0-9]+)")
@@ -71,6 +88,29 @@ func (p *Position) Move(cmd string) {
 		p.Y += steps
 	case "up":
 		p.Y -= steps
+	default:
+		panic(fmt.Errorf("unknown direction: '%s'", cmd))
+	}
+}
+
+func (p *Position) MoveWithAim(cmd string) {
+	parts := commandRegex.FindStringSubmatch(cmd)
+	if len(parts) != 3 {
+		panic(fmt.Errorf("failed parse command: '%s', got: %v", cmd, parts))
+	}
+	steps, err := strconv.Atoi(parts[2])
+	if err != nil {
+		panic(fmt.Errorf("failed parse steps: '%s', err: %w", parts[2], err))
+	}
+
+	switch parts[1] {
+	case "forward":
+		p.X += steps
+		p.Y += p.Aim * steps
+	case "down":
+		p.Aim += steps
+	case "up":
+		p.Aim -= steps
 	default:
 		panic(fmt.Errorf("unknown direction: '%s'", cmd))
 	}
