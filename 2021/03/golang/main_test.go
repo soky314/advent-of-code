@@ -44,9 +44,9 @@ func TestSolvePartTwo(t *testing.T) {
 		{
 			name: "origin example",
 			args: args{
-				r: strings.NewReader(""), // TODO: add origin example input
+				r: strings.NewReader("00100\n11110\n10110\n10111\n10101\n01111\n00111\n11100\n10000\n11001\n00010\n01010"),
 			},
-			want: 1e10, // TODO: add origin example input
+			want: 230,
 		},
 	}
 	for _, tt := range tests {
